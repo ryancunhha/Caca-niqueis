@@ -3,16 +3,17 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Diamond Miner Cassino</title>
+    <title>Diamond Cassino</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 
-<body>
+<body>  
     <canvas id="confetti-canvas"
         style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
 
-    <h1>Diamond Miner Cassino</h1>
+    <h1>Diamond Cassino</h1>
+    <p id="result"></p>
     <div id="balance">Saldo: <span id="coins"></span> fichas</div>
     <div class="machine">
         <div class="reel" id="reel1"></div>
@@ -29,16 +30,14 @@
     <div style="margin-top: 15px;">
         <button onclick="betLow()">Aposta Baixa (50)</button>
         <button onclick="betMax()">Aposta Máxima (200)</button>
-        <button onclick="resetBalance()">Reiniciar Saldo</button>
-        <button id="muteBtn" onclick="toggleMute()">🔈 Mute</button>
+        <button id="muteBtn" onclick="toggleMute()">🔈 Som Ligado</button>
+        <button onclick="toggleAutoPlay()">🎰 AutoPlay</button>
     </div>
-
-    <p id="result"></p>
 
     <audio id="spinSound1" src="./scr/sad-1.mp3" preload="auto"></audio>
     <audio id="spinSound2" src="./scr/sad-2.mp3" preload="auto"></audio>
     <audio id="winSound" src="./scr/win.mp3"></audio>
-    <audio onclick="startBackgroundMusic()" id="bgMusic" src="./scr/lobby.mp3" loop></audio>
+    <audio onclick="startBackgroundMusic()" id="bgMusic" src="./scr/" loop></audio>
 
     <script src="./script.js"></script>
 </body>

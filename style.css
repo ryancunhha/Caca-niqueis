@@ -2,7 +2,7 @@
 
 body {
   margin: 0;
-  padding: 2rem;
+  padding: 1;
   background: linear-gradient(135deg, #0a0a1a 0%, #2a0a3d 100%);
   font-family: 'Orbitron', sans-serif;
   color: #e0e0ff;
@@ -42,6 +42,18 @@ h1 {
   position: relative;
   width: 350px;
   user-select: none;
+  animation: fadeInUp 0.7s ease-in-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .reel {
@@ -73,7 +85,6 @@ h1 {
   animation-timing-function: linear;
 }
 
-/* Linha de pagamento */
 .payline {
   position: absolute;
   top: 50%;
@@ -90,7 +101,6 @@ h1 {
   z-index: 10;
 }
 
-/* Alavanca */
 .lever {
   position: absolute;
   right: -70px;
@@ -125,7 +135,6 @@ h1 {
   transform: translateY(-50%) rotate(30deg) translateY(10px);
 }
 
-/* Alavanca botão (a bolinha) */
 .lever-ball {
   width: 30px;
   height: 30px;
@@ -176,7 +185,6 @@ button:hover {
   user-select: none;
 }
 
-/* Animação de rolagem para baixo */
 @keyframes scroll-down {
   0% {
     top: 0;
@@ -195,8 +203,6 @@ button:hover {
   aspect-ratio: 3 / 2;
 }
 
-
-/* Luzes piscando ao redor da máquina */
 .machine::before {
   content: '';
   position: absolute;
@@ -227,78 +233,5 @@ button:hover {
       0 0 60px #d6b3ff,
       0 0 90px #d6b3ff,
       0 0 100px #b688ff inset;
-  }
-}
-
-/* Responsividade para dispositivos móveis */
-@media (max-width: 900px) {
-  .machine {
-    width: 95vw;
-    padding: 2rem;
-  }
-
-  .reel {
-    width: 30vw;
-    height: 35vw;
-    font-size: 7vw;
-  }
-
-  .lever {
-    width: 80px;
-    height: 220px;
-  }
-
-  .lever-ball {
-    width: 55px;
-    height: 55px;
-  }
-
-  button {
-    font-size: 1.5rem;
-    padding: 2rem 4rem;
-  }
-
-  h1 {
-    font-size: 3rem;
-  }
-
-  #balance, #result {
-    font-size: 1.8rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .machine {
-    width: 100vw;
-    padding: 2rem;
-  }
-
-  .reel {
-    width: 35vw;
-    height: 40vw;
-    font-size: 8vw;
-  }
-
-  .lever {
-    width: 100px;
-    height: 250px;
-  }
-
-  .lever-ball {
-    width: 60px;
-    height: 60px;
-  }
-
-  button {
-    font-size: 1.6rem;
-    padding: 2rem 4rem;
-  }
-
-  h1 {
-    font-size: 3rem;
-  }
-
-  #balance, #result {
-    font-size: 2rem;
   }
 }

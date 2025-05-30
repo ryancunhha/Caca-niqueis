@@ -1,4 +1,3 @@
-// Define tempo limite para resetar saldo (3 minutos em ms)
 const RESET_INTERVAL = 3 * 60 * 1000;
 let musicStarted = false;
 
@@ -19,26 +18,52 @@ function startBackgroundMusic() {
   }
 }
 
+let autoPlay = false;
+let autoPlayInterval;
+
+function toggleAutoPlay() {
+  autoPlay = !autoPlay;
+
+  if (autoPlay) {
+    document.getElementById("result").textContent = "🎰 AutoPlay ativado!";
+    autoPlayInterval = setInterval(() => {
+      if (!isSpinning && balance >= bet) {
+        startBackgroundMusic();
+        const lever = document.querySelector('.lever');
+        lever.classList.add('active');
+        setTimeout(() => lever.classList.remove('active'), 500);
+        spin();
+      } else if (balance < bet) {
+        clearInterval(autoPlayInterval);
+        autoPlay = false;
+        document.getElementById("result").textContent = "⛔ Saldo insuficiente. AutoPlay parado.";
+      }
+    }, 4500);
+  } else {
+    clearInterval(autoPlayInterval);
+    document.getElementById("result").textContent = "🛑 AutoPlay desativado.";
+  }
+}
+
 
 const symbols = [
-  '💎', '7️⃣', '7️⃣', '💰', '💰', '💰',
+  '💎', '💎', '7️⃣', '7️⃣', '💰', '💰', '💰',
   '🪙', '🪙', '🪙', '🪙', '🔶', '🔶', '🔶', '🔶', '🔶'
 ];
 
 const payoutMultipliers = {
-  '💎': 10,
-  '7️⃣': 8,
+  '💎': 8,
+  '7️⃣': 7,
   '💰': 5,
   '🪙': 4,
   '🔶': 3
 };
 
-let balance;
+let balance = 200;
 let bet = 50;
 let isSpinning = false;
 let resetTimeout = null;
 
-// Sons
 const spinSounds = [
   document.getElementById('spinSound1'),
   document.getElementById('spinSound2')
@@ -50,29 +75,58 @@ bgMusic.volume = 0.15;
 bgMusic.play().catch(() => { });
 
 function saveBalance() {
+  const playerName = localStorage.getItem('dm_playerName') || 'Você';
+
+  const data = {
+    name: playerName,
+    balance: balance,
+    lastSaved: Date.now(),
+    totalPoints: parseInt(localStorage.getItem('dm_totalPoints') || '0', 10),
+    recoveryTimestamp: localStorage.getItem('dm_recoveryTimestamp') || null
+  };
+
+  localStorage.setItem('dm_gameData', JSON.stringify(data));
+
   localStorage.setItem('dm_balance', balance);
   localStorage.setItem('dm_lastTime', Date.now());
 }
 
 function loadBalance() {
-  const savedBalance = localStorage.getItem('dm_balance');
-  const lastTime = localStorage.getItem('dm_lastTime');
+  const saved = localStorage.getItem('dm_gameData');
 
-  if (savedBalance && lastTime) {
+  if (saved) {
+    const data = JSON.parse(saved);
     const now = Date.now();
-    if (now - parseInt(lastTime, 10) > RESET_INTERVAL) {
-      balance = 1000;
-      saveBalance();
-      alert('Você recebeu um bônus de 1000 fichas por tempo ocioso!');
+    const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+
+    if (now - data.lastSaved <= THIRTY_DAYS) {
+      balance = data.balance || 1000;
+      localStorage.setItem('dm_playerName', data.name || 'Você');
+      localStorage.setItem('dm_totalPoints', data.totalPoints || '0');
+      localStorage.setItem('dm_recoveryTimestamp', data.recoveryTimestamp || '');
     } else {
-      balance = parseInt(savedBalance, 10);
+      balance = 1000;
+      localStorage.setItem('dm_totalPoints', '0');
     }
   } else {
     balance = 1000;
-    saveBalance();
+    localStorage.setItem('dm_totalPoints', '0');
   }
 
   document.getElementById('coins').textContent = balance;
+  document.getElementById('coins').textContent = balance;
+  setInterval(() => {
+    const lastTime = localStorage.getItem('dm_lastTime');
+    const now = Date.now();
+
+    if (lastTime && (now - parseInt(lastTime, 10) > RESET_INTERVAL)) {
+      balance = 1000;
+      saveBalance();
+      document.getElementById('coins').textContent = balance;
+      document.getElementById('result').textContent = '⏰ Fichas resetadas automaticamente!';
+      localStorage.setItem('dm_lastTime', now); 
+    }
+  }, 30000);
 }
 
 function createReelContent(reelId) {
@@ -98,7 +152,6 @@ function pullLeverAndSpin() {
   if (isSpinning) return;
   isSpinning = true;
 
-  // Toca a música no primeiro clique
   startBackgroundMusic();
 
   const lever = document.querySelector('.lever');
@@ -120,7 +173,6 @@ function spin() {
   document.getElementById('result').textContent = 'Girando...';
   saveBalance();
 
-  // Toca som aleatório do spin
   const chosenSpinSound = spinSounds[Math.floor(Math.random() * spinSounds.length)];
   try {
     chosenSpinSound.pause();
@@ -194,7 +246,12 @@ function checkWin() {
     document.getElementById('result').textContent = 'Tente novamente...';
   }
 
-  saveBalance();
+  if (balance < 49) {
+    balance = 200;
+    document.getElementById('coins').textContent = balance;
+    document.getElementById('result').textContent = "💰 Saldo depositado de 200R$!";
+    saveBalance();
+  }
 }
 
 function betLow() {
@@ -240,6 +297,23 @@ function launchConfetti() {
     spread: 100,
     origin: { y: 0.4 }
   });
+}
+
+function playSlotMachine() {
+  function updateBalanceDisplay() {
+    document.getElementById("balance").textContent = `Saldo: $${balance}`;
+  }
+
+  function checkAutoReset() {
+    if (balance < 49) {
+      balance = 0;
+      updateBalanceDisplay();
+      document.getElementById("result").textContent = "Saldo zerado!";
+    }
+  }
+  balance -= 50; 
+  updateBalanceDisplay();
+  checkAutoReset(); 
 }
 
 ['reel1', 'reel2', 'reel3'].forEach(createReelContent);
