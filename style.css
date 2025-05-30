@@ -195,24 +195,6 @@ button:hover {
   aspect-ratio: 3 / 2;
 }
 
-@media (max-width: 600px) {
-  .lever {
-    display: none;
-    /* Oculta alavanca em telas muito pequenas */
-  }
-
-  .slot-machine {
-    box-shadow: none;
-  }
-
-  .reel {
-    width: 30vw;
-  }
-
-  .symbol {
-    font-size: 4vw;
-  }
-}
 
 /* Luzes piscando ao redor da máquina */
 .machine::before {
@@ -245,5 +227,78 @@ button:hover {
       0 0 60px #d6b3ff,
       0 0 90px #d6b3ff,
       0 0 100px #b688ff inset;
+  }
+}
+
+/* Responsividade para dispositivos móveis */
+@media (max-width: 900px) {
+  .machine {
+    width: 95vw;
+    padding: 2rem;
+  }
+
+  .reel {
+    width: 30vw;
+    height: 35vw;
+    font-size: 7vw;
+  }
+
+  .lever {
+    width: 80px;
+    height: 220px;
+  }
+
+  .lever-ball {
+    width: 55px;
+    height: 55px;
+  }
+
+  button {
+    font-size: 1.5rem;
+    padding: 2rem 4rem;
+  }
+
+  h1 {
+    font-size: 3rem;
+  }
+
+  #balance, #result {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .machine {
+    width: 100vw;
+    padding: 2rem;
+  }
+
+  .reel {
+    width: 35vw;
+    height: 40vw;
+    font-size: 8vw;
+  }
+
+  .lever {
+    width: 100px;
+    height: 250px;
+  }
+
+  .lever-ball {
+    width: 60px;
+    height: 60px;
+  }
+
+  button {
+    font-size: 1.6rem;
+    padding: 2rem 4rem;
+  }
+
+  h1 {
+    font-size: 3rem;
+  }
+
+  #balance, #result {
+    font-size: 2rem;
   }
 }
