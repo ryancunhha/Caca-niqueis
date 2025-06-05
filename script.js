@@ -1,25 +1,90 @@
-const RESET_INTERVAL = 3 * 60 * 1000;
+const RESET_INTERVAL = 0.5 * 60 * 1000;
 let musicStarted = false;
+const BONUS_AMOUNT = 50;
+const MAX_BALANCE = 1000;
+let balance = 50;
+let autoPlay = false;
+let autoPlayInterval;
+let bet = 50;
+let isSpinning = false;
+let resetTimeout = null;
 
-function startBackgroundMusic() {
-  if (musicStarted) return;
+const alavanca = document.getElementById("alavanca");
+let dragging = false;
+let startY = 0;
 
-  const bgMusic = document.getElementById('bgMusic');
-  bgMusic.volume = 0.15;
+function getY(e) {
+  return e.touch ?
+    e.touch[0].clientY : e.clientY;
+}
 
-  const playPromise = bgMusic.play();
-  if (playPromise !== undefined) {
-    playPromise.then(() => {
-      musicStarted = true;
-      console.log('Música de fundo iniciada!');
-    }).catch(err => {
-      console.warn('Falha ao iniciar música. Provavelmente o navegador bloqueou o autoplay.', err);
-    });
+function onStart(e) {
+  dragging = true;
+  startY = getY(e);
+  alavanca.style.cursor = "grabbing";
+}
+
+function onMove() {
+  if (!dragging) return;
+  const movey = getY(e) - startY;
+  if (moveY > 0 && moveY < 120) {
+    alavanca.style.top = "${moveY}px";
   }
 }
 
-let autoPlay = false;
-let autoPlayInterval;
+function onEnd() {
+  if (!dragging) return;
+  dragging = false;
+  alavanca.style.cursor = "grab";
+
+  const pulledEnough = parseInt(alavanca.style.top) > 60;
+  if (pulledEnough) {
+    document.getElementById("lever").click();
+  }
+
+  alavanca.style.top = "10px";
+}
+
+alavanca.addEventListener("mousedown", onStart);
+alavanca.addEventListener("mousedown", onEnd);
+alavanca.addEventListener("touchmove", onStart);
+document.addEventListener("touchmove", onMove);
+document.addEventListener("touchend", onEnd);
+
+alavanca.addEventListener("mousedown", (e) => {
+  dragging = true;
+  startY = e.clientY;
+  alavanca.style.cursor = "grabbing";
+});
+
+document.addEventListener("mousemove", (e) => {
+  if (!dragging) return;
+
+  let moveY = e.clientY - startY;
+  if (moveY > 0 && moveY < 120) {
+    alavanca.style.top = `${moveY}px`;
+  }
+});
+
+document.addEventListener("mouseup", (e) => {
+  if (!dragging) return;
+  dragging = false;
+  alavanca.style.cursor = "grab";
+
+  const pulledEnough = parseInt(alavanca.style.top) > 60;
+
+  if (pulledEnough) {
+    document.getElementById("lever").click();
+  }
+
+  alavanca.style.top = "10px";
+});
+
+document.addEventListener("keydown", function (event) {
+  if (event.key === "Enter") {
+    document.getElementById("lever").click();
+  }
+});
 
 function toggleAutoPlay() {
   autoPlay = !autoPlay;
@@ -28,7 +93,6 @@ function toggleAutoPlay() {
     document.getElementById("result").textContent = "🎰 AutoPlay ativado!";
     autoPlayInterval = setInterval(() => {
       if (!isSpinning && balance >= bet) {
-        startBackgroundMusic();
         const lever = document.querySelector('.lever');
         lever.classList.add('active');
         setTimeout(() => lever.classList.remove('active'), 500);
@@ -36,7 +100,7 @@ function toggleAutoPlay() {
       } else if (balance < bet) {
         clearInterval(autoPlayInterval);
         autoPlay = false;
-        document.getElementById("result").textContent = "⛔ Saldo insuficiente. AutoPlay parado.";
+        document.getElementById("result").textContent = "⛔ Saldo insuficiente.";
       }
     }, 4500);
   } else {
@@ -45,34 +109,24 @@ function toggleAutoPlay() {
   }
 }
 
+function toggleMute() {
+  const sounds = [...spinSounds, winSound];
+  const anyMuted = sounds.some(sound => !sound.muted);
+  sounds.forEach(sound => sound.muted = anyMuted);
+
+  const btn = document.getElementById('muteBtn');
+  btn.textContent = anyMuted ? '🔇' : '🔈';
+}
 
 const symbols = [
-  '💎', '💎', '7️⃣', '7️⃣', '💰', '💰', '💰',
-  '🪙', '🪙', '🪙', '🪙', '🔶', '🔶', '🔶', '🔶', '🔶'
+  '💎', '💎', '💎', '7️⃣', '7️⃣', '7️⃣', '💰', '💰', '💰', '🃏', '🃏', '🃏', '🔶', '🔶', '🔶'
 ];
-
-const payoutMultipliers = {
-  '💎': 8,
-  '7️⃣': 7,
-  '💰': 5,
-  '🪙': 4,
-  '🔶': 3
-};
-
-let balance = 200;
-let bet = 50;
-let isSpinning = false;
-let resetTimeout = null;
 
 const spinSounds = [
   document.getElementById('spinSound1'),
   document.getElementById('spinSound2')
 ];
 const winSound = document.getElementById('winSound');
-const bgMusic = document.getElementById('bgMusic');
-
-bgMusic.volume = 0.15;
-bgMusic.play().catch(() => { });
 
 function saveBalance() {
   const playerName = localStorage.getItem('dm_playerName') || 'Você';
@@ -86,47 +140,62 @@ function saveBalance() {
   };
 
   localStorage.setItem('dm_gameData', JSON.stringify(data));
-
   localStorage.setItem('dm_balance', balance);
   localStorage.setItem('dm_lastTime', Date.now());
 }
 
+function updateUI() {
+  document.getElementById('coins').textContent = balance;
+}
+
 function loadBalance() {
   const saved = localStorage.getItem('dm_gameData');
+  const now = Date.now();
+  const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
 
   if (saved) {
     const data = JSON.parse(saved);
-    const now = Date.now();
-    const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
-
     if (now - data.lastSaved <= THIRTY_DAYS) {
-      balance = data.balance || 1000;
-      localStorage.setItem('dm_playerName', data.name || 'Você');
-      localStorage.setItem('dm_totalPoints', data.totalPoints || '0');
-      localStorage.setItem('dm_recoveryTimestamp', data.recoveryTimestamp || '');
+      balance = data.balance ?? 100;
+      localStorage.setItem('dm_playerName', data.name ?? 'Você');
+      localStorage.setItem('dm_totalPoints', data.totalPoints ?? '0');
+      localStorage.setItem('dm_recoveryTimestamp', data.recoveryTimestamp ?? '');
     } else {
-      balance = 1000;
+      balance = 100;
       localStorage.setItem('dm_totalPoints', '0');
     }
   } else {
-    balance = 1000;
+    balance = 100;
     localStorage.setItem('dm_totalPoints', '0');
   }
 
-  document.getElementById('coins').textContent = balance;
-  document.getElementById('coins').textContent = balance;
+  updateUI();
+
   setInterval(() => {
-    const lastTime = localStorage.getItem('dm_lastTime');
+    const lastTime = parseInt(localStorage.getItem('dm_lastTime') || "0", 10);
     const now = Date.now();
 
-    if (lastTime && (now - parseInt(lastTime, 10) > RESET_INTERVAL)) {
-      balance = 1000;
-      saveBalance();
-      document.getElementById('coins').textContent = balance;
-      document.getElementById('result').textContent = '⏰ Fichas resetadas automaticamente!';
-      localStorage.setItem('dm_lastTime', now); 
+    if (now - lastTime >= RESET_INTERVAL) {
+      if (balance < MAX_BALANCE) {
+        balance = Math.min(balance + BONUS_AMOUNT, MAX_BALANCE);
+        updateUI();
+        saveBalance();
+        document.getElementById('result').textContent = `🎁 +${BONUS_AMOUNT}R$, Continue você consegue!`;
+      }
+      localStorage.setItem('dm_lastTime', now.toString());
     }
-  }, 30000);
+  }, 10000);
+}
+
+function saveBalance() {
+  const data = {
+    balance,
+    name: localStorage.getItem('dm_playerName') || 'Você',
+    totalPoints: localStorage.getItem('dm_totalPoints') || '0',
+    lastSaved: Date.now(),
+    recoveryTimestamp: localStorage.getItem('dm_recoveryTimestamp') || ''
+  };
+  localStorage.setItem('dm_gameData', JSON.stringify(data));
 }
 
 function createReelContent(reelId) {
@@ -151,8 +220,6 @@ function createReelContent(reelId) {
 function pullLeverAndSpin() {
   if (isSpinning) return;
   isSpinning = true;
-
-  startBackgroundMusic();
 
   const lever = document.querySelector('.lever');
   lever.classList.add('active');
@@ -228,62 +295,65 @@ function checkWin() {
 
   if (reelCenters.some(s => s === null)) return;
 
-  const allEqual = reelCenters[0] === reelCenters[1] && reelCenters[1] === reelCenters[2];
-  const symbol = reelCenters[0];
+  const [s1, s2, s3] = reelCenters;
+  const allEqual = s1 === s2 && s2 === s3;
+
+  const symbolData = {
+    "🍒": { multiplier: 2, chanceBoost: 0.9 },
+    "🍋": { multiplier: 3, chanceBoost: 0.8 },
+    "🔔": { multiplier: 5, chanceBoost: 0.6 },
+    "🍀": { multiplier: 8, chanceBoost: 0.4 },
+    "💎": { multiplier: 12, chanceBoost: 0.2 },
+    "👑": { multiplier: 20, chanceBoost: 0.1 }
+  };
+
+  const currentSymbol = s1;
+  const symbolInfo = symbolData[currentSymbol] || { multiplier: 2, chanceBoost: 0.5 };
 
   let winChance = balance <= 200 ? 0.95 : balance <= 500 ? 0.7 : balance <= 1000 ? 0.5 : 0.3;
-  if (allEqual && symbol === '💎' && bet === 200) winChance = 1.0;
+  winChance *= symbolInfo.chanceBoost;
 
   if (allEqual && Math.random() < winChance) {
-    const multiplier = payoutMultipliers[symbol] || 5;
-    const winAmount = bet * multiplier + Math.floor(Math.random() * bet);
+    const bonus = Math.floor(Math.random() * (bet / 2));
+    const winAmount = bet * symbolInfo.multiplier + bonus;
+
     balance += winAmount;
     document.getElementById('coins').textContent = balance;
-    document.getElementById('result').innerHTML = `<span style="color: gold; font-weight: bold;">🎉 ${symbol}${symbol}${symbol} Você ganhou ${winAmount} fichas!</span>`;
+    document.getElementById('result').innerHTML = `
+      <span style="color: gold; font-weight: bold;">
+        🎉 ${currentSymbol.repeat(3)} Parabéns! Você ganhou <b>${winAmount}</b>R$!
+      </span>
+    `;
     winSound.play();
     launchConfetti();
+
+  } else if (s1 === s2 || s2 === s3 || s1 === s3) {
+    document.getElementById('result').innerHTML = `
+      🔄 Quase! Você conseguiu dois <b>${currentSymbol}</b>. Continue tentando!
+    `;
   } else {
-    document.getElementById('result').textContent = 'Tente novamente...';
+    document.getElementById('result').textContent = '💤 Tente novamente...';
   }
 
   if (balance < 49) {
-    balance = 200;
+    balance = 50;
     document.getElementById('coins').textContent = balance;
-    document.getElementById('result').textContent = "💰 Saldo depositado de 200R$!";
-    saveBalance();
+    document.getElementById('result').textContent = "💰 Vamos, você consegue!. +50R$ na conta!";
   }
+
+  saveBalance();
 }
 
 function betLow() {
   if (isSpinning) return;
   bet = 50;
-  document.getElementById('result').textContent = 'Aposta baixa selecionada (50 fichas)';
+  document.getElementById('result').textContent = 'Aposta baixa, selecionada 50R$';
 }
 
 function betMax() {
   if (isSpinning) return;
-  bet = 200;
-  document.getElementById('result').textContent = 'Aposta máxima selecionada (200 fichas)';
-}
-
-function resetBalance() {
-  if (isSpinning) return;
-  balance = 1000;
-  saveBalance();
-  document.getElementById('coins').textContent = balance;
-  document.getElementById('result').textContent = 'Saldo reiniciado!';
-  document.getElementById('resetBtn').style.display = 'none';
-  clearTimeout(resetTimeout);
-  resetTimeout = null;
-}
-
-function toggleMute() {
-  const sounds = [...spinSounds, winSound, bgMusic];
-  const anyMuted = sounds.some(sound => !sound.muted);
-  sounds.forEach(sound => sound.muted = anyMuted);
-
-  const btn = document.getElementById('muteBtn');
-  btn.textContent = anyMuted ? '🔇 Mutado' : '🔈 Som ligado';
+  bet = 100;
+  document.getElementById('result').textContent = 'Aposta máxima, selecionada 100R$';
 }
 
 const myConfetti = confetti.create(document.getElementById('confetti-canvas'), {
@@ -311,11 +381,11 @@ function playSlotMachine() {
       document.getElementById("result").textContent = "Saldo zerado!";
     }
   }
-  balance -= 50; 
+  balance -= 50;
   updateBalanceDisplay();
-  checkAutoReset(); 
+  checkAutoReset();
 }
 
 ['reel1', 'reel2', 'reel3'].forEach(createReelContent);
 loadBalance();
-document.getElementById('result').textContent = 'Aposta baixa selecionada (50 fichas)';
+document.getElementById('result').textContent = 'Aposta baixa, selecionada 50R$';

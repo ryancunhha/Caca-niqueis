@@ -3,41 +3,43 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Diamond Cassino</title>
+    <title>Caça Níquel</title>
     <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 
-<body>  
-    <canvas id="confetti-canvas"
-        style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
-
-    <h1>Diamond Cassino</h1>
+<body>
+    <h1>Caça Níquel</h1>
+    <div id="balance">Saldo: <span id="coins"></span>R$</div>
     <p id="result"></p>
-    <div id="balance">Saldo: <span id="coins"></span> fichas</div>
+
     <div class="machine">
         <div class="reel" id="reel1"></div>
         <div class="reel" id="reel2"></div>
         <div class="reel" id="reel3"></div>
-
         <div class="payline"></div>
 
-        <div class="lever" title="Puxe para girar" onclick="pullLeverAndSpin()">
-            <div class="lever-ball"></div>
+        <div id="alavanca-container">
+            <div title="Puxe para baixo para rodar" id="alavanca"></div>
         </div>
     </div>
 
-    <div style="margin-top: 15px;">
-        <button onclick="betLow()">Aposta Baixa (50)</button>
-        <button onclick="betMax()">Aposta Máxima (200)</button>
-        <button id="muteBtn" onclick="toggleMute()">🔈 Som Ligado</button>
-        <button onclick="toggleAutoPlay()">🎰 AutoPlay</button>
+    <div class="botões1">
+        <button title="AutoPlay" onclick="toggleAutoPlay()">🎰 Auto</button>
+        <button class="lever" id="lever" title="Clique para girar" onclick="pullLeverAndSpin()">ENTER</button>
     </div>
+
+    <div class="botões2">
+        <button onclick="betLow()">Apostar 50R$</button>
+        <button onclick="betMax()">Aposta 100R$</button>
+    </div>
+
+    <button class="som" title="Som da Roleta" id="muteBtn" onclick="toggleMute()">🔈</button>
 
     <audio id="spinSound1" src="./scr/sad-1.mp3" preload="auto"></audio>
     <audio id="spinSound2" src="./scr/sad-2.mp3" preload="auto"></audio>
     <audio id="winSound" src="./scr/win.mp3"></audio>
-    <audio onclick="startBackgroundMusic()" id="bgMusic" src="./scr/" loop></audio>
 
     <script src="./script.js"></script>
 </body>
