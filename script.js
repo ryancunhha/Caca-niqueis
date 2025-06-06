@@ -1,7 +1,7 @@
 const RESET_INTERVAL = 0.8 * 60 * 1000;
 let musicStarted = false;
 const BONUS_AMOUNT = 50;
-const MAX_BALANCE = 1000;
+const MAX_BALANCE = 10000;
 let balance = 50;
 let autoPlay = false;
 let autoPlayInterval;
@@ -87,6 +87,11 @@ const spinSounds = [
   document.getElementById('spinSound2')
 ];
 const winSound = document.getElementById('winSound');
+
+[...spinSounds, winSound].forEach(sound => sound.muted = true);
+
+const mutedBtn = document.getElementById('mutedBtn');
+if (mutedBtn) mutedBtn.textContent = '🔇';
 
 function saveBalance() {
   const playerName = localStorage.getItem('dm_playerName') || 'Você';
