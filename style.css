@@ -14,14 +14,14 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 109vh;
+  height: 111vh;
   user-select: none;
   position: relative;
 }
 
 h1 {
   margin-top: 30px;
-  font-size: 3rem;
+  font-size: 4rem;
   margin-bottom: 1rem;
   text-shadow:
     0 0 10px #7b3fff,
@@ -33,9 +33,9 @@ h1 {
   display: flex;
   background: linear-gradient(135deg, rgb(3, 111, 182), #b688ff);
   border: none;
-  padding: 0.1rem 0.1rem;
+  padding: 0.5rem 0.5rem;
   font-family: 'Orbitron', sans-serif;
-  font-size: 0.8rem;
+  font-size: 1.3rem;
   color: #fff;
   border-radius: 12px;
   box-shadow:
@@ -46,39 +46,36 @@ h1 {
 }
 
 #balance {
-  font-size: 1.2rem;
+  font-size: 1.6rem;
   text-shadow: 0 0 5px #b08aff;
 }
 
-/* resultado */
 #result {
   margin-top: 0.7rem;
   margin-bottom: 0.7rem;
   align-items: center;
-  font-size: 0.8rem;
+  font-size: 1.5rem;
   min-height: 1.5em;
   text-shadow: 0 0 10px #bb9eff;
   user-select: none;
 }
 
-/* maquina - cores e desing */
 .machine {
   background: linear-gradient(#171b31, #0c0e20);
   border-radius: 15px;
-  padding: 2rem 2rem;
+  padding: 1.8rem 3rem;
   display: flex;
-  gap: 1rem;
+  gap: 0.7rem;
   box-shadow:
     0 0 25px #7b3fff, inset 0 0 10px #4b2fa5;
   position: relative;
-  width: 350px;
+  width: 300px;
   user-select: none;
 }
 
-/* quadrados onde estão os emojis */
 .reel {
-  width: 90px;
-  height: 140px;
+  width: 100px;
+  height: 150px;
   background: linear-gradient(145deg, #2a2c43, #1c1f32);
   border: 4px solid #7b3fff;
   border-radius: 15px;
@@ -89,7 +86,6 @@ h1 {
   font-weight: 900;
 }
 
-/* posição dos simbolos */
 .symbols {
   position: absolute;
   top: 0;
@@ -97,7 +93,6 @@ h1 {
   animation-timing-function: linear;
 }
 
-/* linha */
 .payline {
   position: absolute;
   top: 50%;
@@ -114,11 +109,12 @@ h1 {
   z-index: 10;
 }
 
-/* alavanca */
 #alavanca-container {
   position: absolute;
   width: 50px;
   height: 160px;
+  margin-top: -30px;
+  margin-right: 40px;
   background: linear-gradient(#2a2c43ac, #1c1f32);
   box-shadow:
     0 0 25px #7b3fff, inset 0 0 10px #4b2fa5;
@@ -138,14 +134,11 @@ h1 {
   transition: top 0.2s ease;
 }
 
-/* botões */
-.botões1 {}
-
 .botões1 button {
   margin-top: 1rem;
   background: linear-gradient(rgb(212, 20, 20), #f64a00);
   border: none;
-  padding: 0.8rem 1rem;
+  padding: 2rem 2.8rem;
   font-family: 'Orbitron', sans-serif;
   font-weight: 700;
   font-size: 1.1rem;
@@ -160,16 +153,13 @@ h1 {
   margin-right: 10px;
 }
 
-/* botões */
-button {}
-
 .botões2 button {
   display: flex;
   flex-direction: column;
   margin-top: 1rem;
   background: linear-gradient(135deg, rgb(3, 111, 182), #b688ff);
   border: none;
-  padding: 0.5rem 2.4rem;
+  padding: 1rem 6rem;
   font-family: 'Orbitron', sans-serif;
   font-size: 1.1rem;
   color: #fff;
@@ -183,7 +173,6 @@ button {}
   margin-right: 10px;
 }
 
-/* efeito de decida */
 @keyframes scroll-down {
   0% {
     top: 0;
@@ -194,8 +183,7 @@ button {}
   }
 }
 
-/* celulares tela de 600px e 800px */
-@media (min-width: 600px) and (max-width: 800px) {
+@media (min-width: 480px) and (max-width: 1000px) {
   * {
     margin: 0;
     padding: 0;
@@ -204,40 +192,38 @@ button {}
 
   body {
     margin: 0;
+    margin-right: 50px;
     background: linear-gradient(135deg, #0a0a1a 0%, #2a0a3d 100%);
     font-family: 'Orbitron', sans-serif;
     color: #e0e0ff;
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 110vh;
+    height: 135vh;
     user-select: none;
     position: relative;
   }
 
-  /* nome */
   h1 {
     margin-top: 1.2vh;
     font-size: 2.4rem;
   }
 
-  /* saldo */
   #balance {
     font-size: 1.4rem;
   }
 
-  /* resultado */
   #result {
+    align-items: center;
     margin-top: 0.7rem;
     margin-bottom: 0.7rem;
     align-items: center;
-    font-size: 0.8rem;
+    font-size: 1rem;
     min-height: 1.5em;
     text-shadow: 0 0 10px #bb9eff;
     user-select: none;
   }
 
-  /* maquina */
   .machine {
     background: linear-gradient(145deg, #171b31, #0c0e20);
     border-radius: 25px;
@@ -248,7 +234,6 @@ button {}
     user-select: none;
   }
 
-  /* quadrados */
   .reel {
     color: #c1c1ff;
     display: flex;
@@ -259,7 +244,6 @@ button {}
       0 0 0px #7b3fff;
   }
 
-  /* posição dos simbolos */
   .symbols {
     position: absolute;
     top: 0;
@@ -267,7 +251,6 @@ button {}
     animation-timing-function: linear;
   }
 
-  /* linha */
   .payline {
     position: absolute;
     top: 50%;
@@ -284,13 +267,37 @@ button {}
     z-index: 10;
   }
 
-  .botões1 {}
+  #alavanca-container {
+    opacity: 0;
+    position: absolute;
+    width: 45px;
+    height: 160px;
+    margin-right: 40px;
+    margin-top: -30px;
+    background: linear-gradient(#2a2c43ac, #1c1f32);
+    box-shadow:
+      0 0 25px #7b3fff, inset 0 0 10px #4b2fa5;
+    border-radius: 25px;
+    right: -100px;
+  }
+
+  #alavanca {
+    position: absolute;
+    top: 6px;
+    left: 7px;
+    width: 30px;
+    height: 30px;
+    background: rgb(185, 183, 183);
+    border-radius: 50%;
+    cursor: grab;
+    transition: top 0.2s ease;
+  }
 
   .botões1 button {
     margin-top: 1rem;
     background: linear-gradient(rgb(212, 20, 20), #f64a00);
     border: none;
-    padding: 0.8rem 1rem;
+    padding: 1.8rem 2rem;
     font-family: 'Orbitron', sans-serif;
     font-weight: 700;
     font-size: 1.1rem;
@@ -305,16 +312,13 @@ button {}
     margin-right: 10px;
   }
 
-  /* botões */
-  button {}
-
   .botões2 button {
     display: flex;
     flex-direction: column;
     margin-top: 1rem;
     background: linear-gradient(rgb(3, 111, 182), #b688ff);
     border: none;
-    padding: 0.5rem 2.4rem;
+    padding: 1.8rem 4.5rem;
     font-family: 'Orbitron', sans-serif;
     font-size: 1.1rem;
     color: #fff;
@@ -332,7 +336,7 @@ button {}
     display: flex;
     background: linear-gradient(135deg, rgb(3, 111, 182), #b688ff);
     border: none;
-    padding: 0.1rem 0.1rem;
+    padding: 0.7rem 0.8rem;
     font-family: 'Orbitron', sans-serif;
     font-size: 0.8rem;
     color: #fff;
@@ -344,7 +348,6 @@ button {}
     margin-top: 2vh;
   }
 
-  /* efeito de decida */
   @keyframes scroll-down {
     0% {
       top: 0;
@@ -356,7 +359,7 @@ button {}
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 480px) {
   * {
     margin: 0;
     padding: 0;
@@ -371,23 +374,20 @@ button {}
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 1vh;
+    height: 115vh;
     user-select: none;
     position: relative;
   }
 
-  /* nome */
   h1 {
     margin-top: 1.2vh;
     font-size: 2.4rem;
   }
 
-  /* saldo */
   #balance {
     font-size: 1.4rem;
   }
 
-  /* resultado */
   #result {
     margin-top: 0.7rem;
     margin-bottom: 0.7rem;
@@ -398,11 +398,9 @@ button {}
     user-select: none;
   }
 
-  /* maquina */
   .machine {
     background: linear-gradient(145deg, #171b31, #0c0e20);
     border-radius: 25px;
-    margin-right: 40px;
     padding: 1rem 1rem;
     display: flex;
     gap: 1rem;
@@ -410,7 +408,6 @@ button {}
     user-select: none;
   }
 
-  /* quadrados */
   .reel {
     color: #c1c1ff;
     display: flex;
@@ -422,7 +419,6 @@ button {}
       0 0 0px #7b3fff;
   }
 
-  /* posição dos simbolos */
   .symbols {
     position: absolute;
     top: 0;
@@ -430,7 +426,6 @@ button {}
     animation-timing-function: linear;
   }
 
-  /* linha */
   .payline {
     position: absolute;
     top: 50%;
@@ -447,16 +442,17 @@ button {}
     z-index: 10;
   }
 
-  /* alavanca */
   #alavanca-container {
+    opacity: 0;
     position: absolute;
     width: 35px;
-    height: 140px;
+    height: 110px;
     background: linear-gradient(#2a2c43ac, #1c1f32);
     box-shadow:
       0 0 25px #7b3fff, inset 0 0 10px #4b2fa5;
     border-radius: 25px;
-    right: -45px;
+    right: -85px;
+    top: 40px;
   }
 
   #alavanca {
@@ -471,13 +467,11 @@ button {}
     transition: top 0.2s ease;
   }
 
-  .botões1 {}
-
   .botões1 button {
     margin-top: 1rem;
     background: linear-gradient(rgb(212, 20, 20), #f64a00);
     border: none;
-    padding: 0.8rem 1rem;
+    padding: 1rem 1.6rem;
     font-family: 'Orbitron', sans-serif;
     font-weight: 700;
     font-size: 1.1rem;
@@ -492,16 +486,13 @@ button {}
     margin-right: 10px;
   }
 
-  /* botões */
-  button {}
-
   .botões2 button {
     display: flex;
     flex-direction: column;
     margin-top: 1rem;
     background: linear-gradient(135deg, rgb(3, 111, 182), #b688ff);
     border: none;
-    padding: 0.5rem 2.4rem;
+    padding: 1rem 4rem;
     font-family: 'Orbitron', sans-serif;
     font-size: 1.1rem;
     color: #fff;
@@ -519,9 +510,9 @@ button {}
     display: flex;
     background: linear-gradient(135deg, rgb(3, 111, 182), #b688ff);
     border: none;
-    padding: 0.1rem 0.1rem;
+    padding: 0.5rem 0.5rem;
     font-family: 'Orbitron', sans-serif;
-    font-size: 0.8rem;
+    font-size: 1.5rem;
     color: #fff;
     border-radius: 12px;
     box-shadow:
@@ -531,7 +522,6 @@ button {}
     margin-top: 2vh;
   }
 
-  /* efeito de decida */
   @keyframes scroll-down {
     0% {
       top: 0;

@@ -1,4 +1,4 @@
-const RESET_INTERVAL = 0.5 * 60 * 1000;
+const RESET_INTERVAL = 0.8 * 60 * 1000;
 let musicStarted = false;
 const BONUS_AMOUNT = 50;
 const MAX_BALANCE = 1000;
@@ -13,50 +13,11 @@ const alavanca = document.getElementById("alavanca");
 let dragging = false;
 let startY = 0;
 
-function getY(e) {
-  return e.touch ?
-    e.touch[0].clientY : e.clientY;
-}
-
-function onStart(e) {
-  dragging = true;
-  startY = getY(e);
-  alavanca.style.cursor = "grabbing";
-}
-
-function onMove() {
-  if (!dragging) return;
-  const movey = getY(e) - startY;
-  if (moveY > 0 && moveY < 120) {
-    alavanca.style.top = "${moveY}px";
-  }
-}
-
-function onEnd() {
-  if (!dragging) return;
-  dragging = false;
-  alavanca.style.cursor = "grab";
-
-  const pulledEnough = parseInt(alavanca.style.top) > 60;
-  if (pulledEnough) {
-    document.getElementById("lever").click();
-  }
-
-  alavanca.style.top = "10px";
-}
-
-alavanca.addEventListener("mousedown", onStart);
-alavanca.addEventListener("mousedown", onEnd);
-alavanca.addEventListener("touchmove", onStart);
-document.addEventListener("touchmove", onMove);
-document.addEventListener("touchend", onEnd);
-
 alavanca.addEventListener("mousedown", (e) => {
   dragging = true;
   startY = e.clientY;
   alavanca.style.cursor = "grabbing";
 });
-
 document.addEventListener("mousemove", (e) => {
   if (!dragging) return;
 
@@ -65,7 +26,6 @@ document.addEventListener("mousemove", (e) => {
     alavanca.style.top = `${moveY}px`;
   }
 });
-
 document.addEventListener("mouseup", (e) => {
   if (!dragging) return;
   dragging = false;
@@ -100,7 +60,7 @@ function toggleAutoPlay() {
       } else if (balance < bet) {
         clearInterval(autoPlayInterval);
         autoPlay = false;
-        document.getElementById("result").textContent = "⛔ Saldo insuficiente.";
+        document.getElementById("result").textContent = "⛔ Saldo insuficiente, desativado.";
       }
     }, 4500);
   } else {
@@ -119,7 +79,7 @@ function toggleMute() {
 }
 
 const symbols = [
-  '💎', '💎', '💎', '7️⃣', '7️⃣', '7️⃣', '💰', '💰', '💰', '🃏', '🃏', '🃏', '🔶', '🔶', '🔶'
+  '💎', '💎', '💎', '7️⃣', '7️⃣', '7️⃣', '💰', '💰', '💰', '🍀', '🍀', '🍀', '🍒', '🍒', '🍒'
 ];
 
 const spinSounds = [
@@ -180,7 +140,7 @@ function loadBalance() {
         balance = Math.min(balance + BONUS_AMOUNT, MAX_BALANCE);
         updateUI();
         saveBalance();
-        document.getElementById('result').textContent = `🎁 +${BONUS_AMOUNT}R$, Continue você consegue!`;
+        document.getElementById('result').textContent = `🎁 +${BONUS_AMOUNT}R$, Continue estar perto!`;
       }
       localStorage.setItem('dm_lastTime', now.toString());
     }
@@ -300,11 +260,10 @@ function checkWin() {
 
   const symbolData = {
     "🍒": { multiplier: 2, chanceBoost: 0.9 },
-    "🍋": { multiplier: 3, chanceBoost: 0.8 },
-    "🔔": { multiplier: 5, chanceBoost: 0.6 },
+    "💰": { multiplier: 3, chanceBoost: 0.8 },
+    "7️⃣": { multiplier: 5, chanceBoost: 0.6 },
     "🍀": { multiplier: 8, chanceBoost: 0.4 },
     "💎": { multiplier: 12, chanceBoost: 0.2 },
-    "👑": { multiplier: 20, chanceBoost: 0.1 }
   };
 
   const currentSymbol = s1;
@@ -329,7 +288,7 @@ function checkWin() {
 
   } else if (s1 === s2 || s2 === s3 || s1 === s3) {
     document.getElementById('result').innerHTML = `
-      🔄 Quase! Você conseguiu dois <b>${currentSymbol}</b>. Continue tentando!
+      🔄 Quase!. Continue tentando!
     `;
   } else {
     document.getElementById('result').textContent = '💤 Tente novamente...';
@@ -338,7 +297,7 @@ function checkWin() {
   if (balance < 49) {
     balance = 50;
     document.getElementById('coins').textContent = balance;
-    document.getElementById('result').textContent = "💰 Vamos, você consegue!. +50R$ na conta!";
+    document.getElementById('result').textContent = "💰 Vamos, você consegue!. +50R$!";
   }
 
   saveBalance();
